@@ -61,7 +61,7 @@
  
 // export default InviteCodePage;
 
-// app/(invite)/(routes)/invite/[inviteCode]/page.tsx
+// ✅ CORRECT VERSION THAT BUILDS ON VERCEL
 
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
@@ -101,16 +101,10 @@ export default async function InviteCodePage({
   }
 
   const server = await db.server.update({
-    where: {
-      inviteCode,
-    },
+    where: { inviteCode },
     data: {
       members: {
-        create: [
-          {
-            profileId: profile.id,
-          },
-        ],
+        create: [{ profileId: profile.id }],
       },
     },
   });
