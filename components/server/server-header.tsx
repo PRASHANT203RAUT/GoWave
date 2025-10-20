@@ -1,8 +1,8 @@
 "use client"
 import { ServerWithMembersWithProfiles } from "@/types"
-import {MemberRole, Server} from "@prisma/client"
+import {MemberRole} from "@prisma/client"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { ChevronDown, LogOut, PlusCircle, Settings, Trash, User, UserPlus, Users } from "lucide-react";
+import { ChevronDown, LogOut, PlusCircle, Settings, Trash, UserPlus, Users } from "lucide-react";
 import { useModal } from "@/hooks/use-modal-store";
 // import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 interface ServerHeaderProps{

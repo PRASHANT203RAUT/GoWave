@@ -1,6 +1,6 @@
 import { currentUser } from "@clerk/nextjs/server";
 // import { RedirectToSignIn } from "@clerk/nextjs";
-import { RedirectToSignIn } from "@clerk/nextjs";
+// import { RedirectToSignIn } from "@clerk/nextjs";
 import { db } from "./db";
 // import { redirectToSignIn } from "@clerk/nextjs/server"
 // export const initialProfile =async()=>{

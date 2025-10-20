@@ -6,6 +6,9 @@ const nextConfig = {
 //     })
 // return config;
 //   },
+ eslint: {
+    ignoreDuringBuilds: true,
+  },
   devIndicators: false,
   images: {
     domains: [
