@@ -95,7 +95,7 @@ const ServerIdLayout = async ({
     },
   });
 
-  console.log("paramsId", awaitedParams.serverId);
+  // console.log("paramsId", awaitedParams.serverId);
 
   if (!server) {
     return redirect("/");
