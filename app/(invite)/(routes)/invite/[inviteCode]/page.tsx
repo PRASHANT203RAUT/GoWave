@@ -1,62 +1,119 @@
+// import { currentProfile } from "@/lib/current-profile";
+// import { db } from "@/lib/db";
+// import { RedirectToSignIn } from "@clerk/nextjs";
+// import { redirect } from "next/navigation";
+
+// interface InviteCodePageProps{
+//     params:{
+//         inviteCode:string;
+//     }
+// }
+
+
+// const InviteCodePage = async({params}:{
+//   params: { inviteCode: string };
+// }) => {
+
+//     const profile= await currentProfile()
+//     if(!profile){
+//         return RedirectToSignIn({})
+//     }
+//     if(!params.inviteCode){
+//         return redirect("/")
+//     }
+//     const existingServer=await db.server.findFirst({
+//         where:{
+//             inviteCode:params.inviteCode,
+//             members:{
+//                 some:{
+//                  profileId:profile.id
+//                     // <profileId:profile className="id"></profileId:profile>
+//                 }
+//             }
+//         }
+//     })
+//     if(existingServer){
+//         return redirect(`/servers/${existingServer.id}`);
+
+//     }
+    
+//     const server=await db.server.update({
+//         where:{
+//             inviteCode:params.inviteCode
+//         },
+//         data:{
+//             members:{
+//                 create:[
+//                     {
+//                         profileId:profile.id,
+//                     }
+//                 ]
+//             }
+//         }
+//     })
+
+// if(server){
+//     return redirect(`/servers/${server.id}`)
+// }
+
+//     return ( <div>hellow</div> );
+// }
+ 
+// export default InviteCodePage;
+
+// app/(invite)/(routes)/invite/[inviteCode]/page.tsx
+
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { RedirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
-interface InviteCodePageProps{
-    params:{
-        inviteCode:string;
-    }
-}
-
-
-const InviteCodePage = async({params}:{
+export default async function InviteCodePage({
+  params,
+}: {
   params: { inviteCode: string };
-}) => {
+}) {
+  const profile = await currentProfile();
 
-    const profile= await currentProfile()
-    if(!profile){
-        return RedirectToSignIn({})
-    }
-    if(!params.inviteCode){
-        return redirect("/")
-    }
-    const existingServer=await db.server.findFirst({
-        where:{
-            inviteCode:params.inviteCode,
-            members:{
-                some:{
-                 profileId:profile.id
-                    // <profileId:profile className="id"></profileId:profile>
-                }
-            }
-        }
-    })
-    if(existingServer){
-        return redirect(`/servers/${existingServer.id}`);
+  if (!profile) {
+    return RedirectToSignIn({});
+  }
 
-    }
-    
-    const server=await db.server.update({
-        where:{
-            inviteCode:params.inviteCode
+  const { inviteCode } = params;
+
+  if (!inviteCode) {
+    return redirect("/");
+  }
+
+  const existingServer = await db.server.findFirst({
+    where: {
+      inviteCode,
+      members: {
+        some: {
+          profileId: profile.id,
         },
-        data:{
-            members:{
-                create:[
-                    {
-                        profileId:profile.id,
-                    }
-                ]
-            }
-        }
-    })
+      },
+    },
+  });
 
-if(server){
-    return redirect(`/servers/${server.id}`)
-}
+  if (existingServer) {
+    return redirect(`/servers/${existingServer.id}`);
+  }
 
-    return ( <div>hellow</div> );
+  const server = await db.server.update({
+    where: {
+      inviteCode,
+    },
+    data: {
+      members: {
+        create: [
+          {
+            profileId: profile.id,
+          },
+        ],
+      },
+    },
+  });
+
+  return redirect(`/servers/${server.id}`);
 }
- 
-export default InviteCodePage;
