@@ -74,10 +74,9 @@ const ServerIdLayout = async ({
   params,
 }: {
   children: React.ReactNode;
-  params: { serverId: string };
+  params: Promise<{ serverId: string }>;
 }) => {
-  // Await params before using
-  const awaitedParams = await params;
+  const { serverId } = await params;
 
   const profile = await currentProfile();
   if (!profile) {
@@ -86,7 +85,7 @@ const ServerIdLayout = async ({
 
   const server = await db.server.findFirst({
     where: {
-      id: awaitedParams.serverId,
+      id: serverId,
       members: {
         some: {
           profileId: profile.id,
@@ -95,8 +94,6 @@ const ServerIdLayout = async ({
     },
   });
 
-  // console.log("paramsId", awaitedParams.serverId);
-
   if (!server) {
     return redirect("/");
   }
@@ -104,7 +101,7 @@ const ServerIdLayout = async ({
   return (
     <div className="h-full">
       <div className="md:flex h-full w-60 z-20 flex-col fixed inset-y-0">
-        <ServerSidebar serverId={awaitedParams.serverId} />
+        <ServerSidebar serverId={serverId} />
       </div>
       <main className="h-full md:pl-60">{children}</main>
     </div>
@@ -112,3 +109,4 @@ const ServerIdLayout = async ({
 };
 
 export default ServerIdLayout;
+

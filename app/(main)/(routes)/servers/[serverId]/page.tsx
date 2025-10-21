@@ -51,13 +51,11 @@ import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 
 interface ServerIdPageProps {
-  params: {
-    serverId: string;
-  };
+  params: Promise<{ serverId: string }>;
 }
 
 const ServerIdPage = async ({ params }: ServerIdPageProps) => {
-  const awaitedParams = await params;  // <--- Await params here
+  const { serverId } = await params;
 
   const profile = await currentProfile();
   if (!profile) {
@@ -66,7 +64,7 @@ const ServerIdPage = async ({ params }: ServerIdPageProps) => {
 
   const server = await db.server.findUnique({
     where: {
-      id: awaitedParams.serverId,  // <--- use awaitedParams here
+      id: serverId,
       members: {
         some: {
           profileId: profile.id,
@@ -89,7 +87,8 @@ const ServerIdPage = async ({ params }: ServerIdPageProps) => {
   if (initialChannel?.name !== "general") {
     return null;
   }
-  return redirect(`/servers/${awaitedParams.serverId}/channels/${initialChannel?.id}`);
+  return redirect(`/servers/${serverId}/channels/${initialChannel?.id}`);
 };
 
 export default ServerIdPage;
+

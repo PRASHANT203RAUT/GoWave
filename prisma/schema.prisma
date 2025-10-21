@@ -47,7 +47,7 @@ model Server{
     profile Profile @relation(fields: [profileId],references: [id],onDelete: Cascade)
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt()
 
     @@index([profileId])
   } 
@@ -73,7 +73,7 @@ model Member{
   conversationsReceived Conversation[] @relation("MemberTwo")
 
     createdAt DateTime @default(now())
-    updateAt DateTime @updatedAt
+    updateAt DateTime @updatedAt()
     @@index([profileId])
     @@index([serverId])
   }
@@ -94,7 +94,7 @@ model Channel{
     
 messages Message[]
     createdAt DateTime @default(now())
-    updateAt DateTime @updatedAt
+    updateAt DateTime @updatedAt()
     @@index([profileId])
     @@index([serverId])
   }
@@ -111,7 +111,7 @@ channel Channel @relation(fields: [channelId],references: [id],onDelete: Cascade
 
 deleted Boolean @default(false) 
 createdAt DateTime @default(now())
-updatedAt DateTime @updatedAt
+updatedAt DateTime @updatedAt()
 @@index([channelId])
 @@index([memberId])
 
@@ -140,7 +140,7 @@ model DirectMessage{
   conversatoin Conversation @relation(fields: [conversationId],references: [id],onDelete: Cascade)
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt()
 deleted Boolean @default(false) 
 
 

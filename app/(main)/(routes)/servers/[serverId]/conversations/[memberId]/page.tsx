@@ -136,38 +136,30 @@ interface MemberIdPageProps {
   params: Promise<{
     memberId: string;
     serverId: string;
-  }>,
-  searchParams:{
-    video?:boolean
-  }
+  }>;
+  searchParams: Promise<{
+    video?: string;
+  }>;
 }
 
-// Make the component async and await searchParams
-// Make the component async and await both params and searchParams
+
 export default async function MemberIdPage({
   params,
   searchParams,
-}: {
-  params: { serverId: string; memberId: string };
-  searchParams: { video?: string };
-}) {
-  const resolvedParams = await params;
-  const resolvedSearchParams = await searchParams;
+}: MemberIdPageProps) {
+  const { memberId, serverId } = await params;
+  const { video } = await searchParams; 
 
   const profile = await currentProfile();
-
   if (!profile) {
     return RedirectToSignIn({});
   }
-
   const currentMember = await db.member.findFirst({
     where: {
-      serverId: resolvedParams.serverId,
+      serverId: serverId,
       profileId: profile.id,
     },
-    include: {
-      profile: true,
-    },
+    include: { profile: true },
   });
 
   if (!currentMember) {
@@ -176,32 +168,29 @@ export default async function MemberIdPage({
 
   const conversation = await getOrCreateConversation(
     currentMember.id,
-    resolvedParams.memberId
+    memberId
   );
 
   if (!conversation) {
-    return redirect(`/servers/${resolvedParams.serverId}`);
+    return redirect(`/servers/${serverId}`);
   }
 
   const { memberOne, memberTwo } = conversation;
   const otherMember = memberOne.profileId === profile.id ? memberTwo : memberOne;
 
-  const isVideo = resolvedSearchParams.video === "true";
+  const isVideo = video === "true";
 
   return (
     <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
       <ChatHeader
         imageUrl={otherMember.profile.imageUrl}
         name={otherMember.profile.name}
-        serverId={resolvedParams.serverId}
+        serverId={serverId}
         type="conversation"
       />
-
-      {isVideo && (
+      {isVideo ? (
         <MediaRoom chatId={conversation.id} video={true} audio={true} />
-      )}
-
-      {!isVideo && (
+      ) : (
         <>
           <ChatMessages
             member={currentMember}
